@@ -28,6 +28,7 @@ from drf_spectacular.views import (
 )
 from graphene_django.views import GraphQLView
 from users import urls as users_urls
+from organizations import urls as organizations_urls
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -50,6 +51,7 @@ urlpatterns = [
 
     # API endpoints
     path('api/v1/users/', include('users.urls')),
+    path('api/v1/organizations/', include('organizations.urls')),
 
     # GraphQL endpoint will be added later when needed
     # path("graphql/", GraphQLView.as_view(graphiql=True, schema=schema)),

@@ -1,0 +1,264 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0 -- C:\Users\Kenne\Documents\ALX\alx-project-nexus\venv\Scripts\python.exe
+cachedir: .pytest_cache
+django: version: 5.2.8, settings: pollr_backend.settings (from ini)
+rootdir: C:\Users\Kenne\Documents\ALX\alx-project-nexus\pollr_backend
+configfile: pytest.ini
+plugins: Faker-38.2.0, cov-7.0.0, django-4.11.1
+collecting ... collected 5 items
+
+users/tests.py::TestUserAdministration::test_super_admin_list_users ERROR [ 20%]
+users/tests.py::TestUserAdministration::test_regular_user_cannot_list_users PASSED [ 40%]
+users/tests.py::TestUserAdministration::test_suspend_user ERROR          [ 60%]
+users/tests.py::TestUserAdministration::test_activate_user ERROR         [ 80%]
+users/tests.py::TestUserAdministration::test_get_user_statistics ERROR   [100%]
+
+=================================== ERRORS ====================================
+____ ERROR at setup of TestUserAdministration.test_super_admin_list_users _____
+..\venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   psycopg2.errors.UniqueViolation: duplicate key value violates unique constraint "users_email_key"
+E   DETAIL:  Key (email)=(admin@example.com) already exists.
+
+The above exception was the direct cause of the following exception:
+users\tests.py:33: in super_admin
+    return User.objects.create_superuser(
+users\models.py:43: in create_superuser
+    return self.create_user(email, password, **extra_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+users\models.py:28: in create_user
+    user.save(using=self._db)
+..\venv\Lib\site-packages\django\contrib\auth\base_user.py:65: in save
+    super().save(*args, **kwargs)
+..\venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+..\venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+..\venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+..\venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+..\venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+..\venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+..\venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+..\venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   django.db.utils.IntegrityError: duplicate key value violates unique constraint "users_email_key"
+E   DETAIL:  Key (email)=(admin@example.com) already exists.
+---------------------------- Captured stdout setup ----------------------------
+Operations to perform:
+  Synchronize unmigrated apps: messages, rest_framework, rest_framework_simplejwt, staticfiles
+  Apply all migrations: admin, auth, contenttypes, organizations, sessions, users
+Running pre-migrate handlers for application admin
+Running pre-migrate handlers for application auth
+Running pre-migrate handlers for application contenttypes
+Running pre-migrate handlers for application sessions
+Running pre-migrate handlers for application rest_framework_simplejwt
+Running pre-migrate handlers for application users
+Running pre-migrate handlers for application organizations
+Running pre-migrate handlers for application pollr
+Synchronizing apps without migrations:
+  Creating tables...
+    Running deferred SQL...
+Running migrations:
+  No migrations to apply.
+Running post-migrate handlers for application admin
+Running post-migrate handlers for application auth
+Running post-migrate handlers for application contenttypes
+Running post-migrate handlers for application sessions
+Running post-migrate handlers for application rest_framework_simplejwt
+Running post-migrate handlers for application users
+Running post-migrate handlers for application organizations
+Running post-migrate handlers for application pollr
+---------------------------- Captured stderr setup ----------------------------
+Using existing test database for alias 'default' ('test_pollrdb')...
+
+_________ ERROR at setup of TestUserAdministration.test_suspend_user __________
+..\venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   psycopg2.errors.UniqueViolation: duplicate key value violates unique constraint "users_email_key"
+E   DETAIL:  Key (email)=(admin@example.com) already exists.
+
+The above exception was the direct cause of the following exception:
+users\tests.py:33: in super_admin
+    return User.objects.create_superuser(
+users\models.py:43: in create_superuser
+    return self.create_user(email, password, **extra_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+users\models.py:28: in create_user
+    user.save(using=self._db)
+..\venv\Lib\site-packages\django\contrib\auth\base_user.py:65: in save
+    super().save(*args, **kwargs)
+..\venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+..\venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+..\venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+..\venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+..\venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+..\venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+..\venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+..\venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   django.db.utils.IntegrityError: duplicate key value violates unique constraint "users_email_key"
+E   DETAIL:  Key (email)=(admin@example.com) already exists.
+_________ ERROR at setup of TestUserAdministration.test_activate_user _________
+..\venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   psycopg2.errors.UniqueViolation: duplicate key value violates unique constraint "users_email_key"
+E   DETAIL:  Key (email)=(admin@example.com) already exists.
+
+The above exception was the direct cause of the following exception:
+users\tests.py:33: in super_admin
+    return User.objects.create_superuser(
+users\models.py:43: in create_superuser
+    return self.create_user(email, password, **extra_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+users\models.py:28: in create_user
+    user.save(using=self._db)
+..\venv\Lib\site-packages\django\contrib\auth\base_user.py:65: in save
+    super().save(*args, **kwargs)
+..\venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+..\venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+..\venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+..\venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+..\venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+..\venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+..\venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+..\venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   django.db.utils.IntegrityError: duplicate key value violates unique constraint "users_email_key"
+E   DETAIL:  Key (email)=(admin@example.com) already exists.
+______ ERROR at setup of TestUserAdministration.test_get_user_statistics ______
+..\venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   psycopg2.errors.UniqueViolation: duplicate key value violates unique constraint "users_email_key"
+E   DETAIL:  Key (email)=(admin@example.com) already exists.
+
+The above exception was the direct cause of the following exception:
+users\tests.py:33: in super_admin
+    return User.objects.create_superuser(
+users\models.py:43: in create_superuser
+    return self.create_user(email, password, **extra_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+users\models.py:28: in create_user
+    user.save(using=self._db)
+..\venv\Lib\site-packages\django\contrib\auth\base_user.py:65: in save
+    super().save(*args, **kwargs)
+..\venv\Lib\site-packages\django\db\models\base.py:902: in save
+    self.save_base(
+..\venv\Lib\site-packages\django\db\models\base.py:1008: in save_base
+    updated = self._save_table(
+..\venv\Lib\site-packages\django\db\models\base.py:1169: in _save_table
+    results = self._do_insert(
+..\venv\Lib\site-packages\django\db\models\base.py:1210: in _do_insert
+    return manager._insert(
+..\venv\Lib\site-packages\django\db\models\manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\venv\Lib\site-packages\django\db\models\query.py:1873: in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\venv\Lib\site-packages\django\db\models\sql\compiler.py:1882: in execute_sql
+    cursor.execute(sql, params)
+..\venv\Lib\site-packages\django\db\backends\utils.py:79: in execute
+    return self._execute_with_wrappers(
+..\venv\Lib\site-packages\django\db\backends\utils.py:92: in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\venv\Lib\site-packages\django\db\backends\utils.py:100: in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\venv\Lib\site-packages\django\db\utils.py:91: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+..\venv\Lib\site-packages\django\db\backends\utils.py:105: in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   django.db.utils.IntegrityError: duplicate key value violates unique constraint "users_email_key"
+E   DETAIL:  Key (email)=(admin@example.com) already exists.
+============================== warnings summary ===============================
+..\venv\Lib\site-packages\environ\compat.py:44
+  C:\Users\Kenne\Documents\ALX\alx-project-nexus\venv\Lib\site-packages\environ\compat.py:44: DeprecationWarning: 'pkgutil.find_loader' is deprecated and slated for removal in Python 3.14; use importlib.util.find_spec() instead
+    if pkgutil.find_loader('simplejson'):
+
+..\venv\Lib\site-packages\environ\compat.py:49
+  C:\Users\Kenne\Documents\ALX\alx-project-nexus\venv\Lib\site-packages\environ\compat.py:49: DeprecationWarning: 'pkgutil.find_loader' is deprecated and slated for removal in Python 3.14; use importlib.util.find_spec() instead
+    if pkgutil.find_loader('django'):
+
+..\venv\Lib\site-packages\environ\compat.py:66
+  C:\Users\Kenne\Documents\ALX\alx-project-nexus\venv\Lib\site-packages\environ\compat.py:66: DeprecationWarning: 'pkgutil.find_loader' is deprecated and slated for removal in Python 3.14; use importlib.util.find_spec() instead
+    if pkgutil.find_loader('redis_cache'):
+
+users/tests.py::TestUserAdministration::test_regular_user_cannot_list_users
+  C:\Users\Kenne\Documents\ALX\alx-project-nexus\venv\Lib\site-packages\drf_yasg\views.py:100: DeprecationWarning: SwaggerJSONRenderer & SwaggerYAMLRenderer's `format` has changed to not include a `.` prefix, please silence this warning by setting `SWAGGER_USE_COMPAT_RENDERERS = False` in your Django settings and ensure your application works (check your URLCONF and swagger/redoc URLs).
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+ERROR users/tests.py::TestUserAdministration::test_super_admin_list_users - django.db.utils.IntegrityError: duplicate key value violates unique constraint "users_email_key"
+DETAIL:  Key (email)=(admin@example.com) already exists.
+ERROR users/tests.py::TestUserAdministration::test_suspend_user - django.db.utils.IntegrityError: duplicate key value violates unique constraint "users_email_key"
+DETAIL:  Key (email)=(admin@example.com) already exists.
+ERROR users/tests.py::TestUserAdministration::test_activate_user - django.db.utils.IntegrityError: duplicate key value violates unique constraint "users_email_key"
+DETAIL:  Key (email)=(admin@example.com) already exists.
+ERROR users/tests.py::TestUserAdministration::test_get_user_statistics - django.db.utils.IntegrityError: duplicate key value violates unique constraint "users_email_key"
+DETAIL:  Key (email)=(admin@example.com) already exists.
+================== 1 passed, 4 warnings, 4 errors in 10.63s ===================

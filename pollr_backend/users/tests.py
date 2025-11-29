@@ -30,6 +30,9 @@ def regular_user(db):
 @pytest.fixture
 def super_admin(db):
     """Fixture for super admin user."""
+    user = User.objects.filter(email='admin@example.com').first()
+    if user:
+        return user
     return User.objects.create_superuser(
         email='admin@example.com',
         password='adminpass123',
@@ -186,12 +189,12 @@ class TestUserProfile:
         assert regular_user.first_name == 'Jane'
         assert regular_user.last_name == 'Smith'
     
-    # def test_cannot_update_other_profile(self, api_client, regular_user, super_admin):
-    #     """Test that users cannot update other users' profiles."""
-    #     api_client.force_authenticate(user=regular_user)
-    #     url = f"/api/v1/users/{super_admin.id}/"
-    #     response = api_client.patch(url, {"first_name": "NewName"}, format='json')
-    #     assert response.status_code == status.HTTP_403_FORBIDDEN
+    def test_cannot_update_other_profile(self, api_client, regular_user, super_admin):
+        """Test that users cannot update other users' profiles."""
+        api_client.force_authenticate(user=regular_user)
+        url = f"/api/v1/users/{super_admin.id}/"
+        response = api_client.patch(url, {"first_name": "NewName"}, format='json')
+        assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
 @pytest.mark.django_db

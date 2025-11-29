@@ -57,6 +57,10 @@ class UserViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.is_authenticated and user.is_super_admin():
             return User.objects.all()
+
+        if self.action in ['retrieve', 'update', 'partial_update']:
+            return User.objects.all()
+
         return User.objects.filter(id=user.id)
     
     @extend_schema(
