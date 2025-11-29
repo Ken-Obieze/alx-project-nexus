@@ -1,3 +1,3 @@
 from django.contrib import admin
 
-# Register your models here.
+# Organization model is registered in organizations/admin.py
