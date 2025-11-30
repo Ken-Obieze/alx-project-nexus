@@ -11,12 +11,26 @@ class IsOrganizationOwnerOrAdmin(permissions.BasePermission):
         if request.user.is_super_admin():
             return True
         
+        # Handle different object types
+        if hasattr(obj, 'organization'):
+            # Election, Position, etc.
+            organization = obj.organization
+        elif hasattr(obj, 'position'):
+            # Candidate
+            organization = obj.position.election.organization
+        elif hasattr(obj, 'election'):
+            # Vote
+            organization = obj.election.organization
+        else:
+            # Direct organization object
+            organization = obj
+        
         # Organization owner has full access
-        if obj.owner == request.user:
+        if organization.owner == request.user:
             return True
         
         # Check if user is an admin member
-        return obj.is_admin(request.user)
+        return organization.is_admin(request.user)
 
 
 class IsOrganizationMember(permissions.BasePermission):

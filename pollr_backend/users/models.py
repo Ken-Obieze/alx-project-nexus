@@ -128,7 +128,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     def get_organizations(self):
         """Get all organizations the user belongs to."""
-        from apps.organizations.models import Organization
+        from organizations.models import Organization
         return Organization.objects.filter(
             models.Q(owner=self) |
             models.Q(members__user=self, members__membership_status='approved')

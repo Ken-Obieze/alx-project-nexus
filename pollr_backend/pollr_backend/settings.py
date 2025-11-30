@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'drf_spectacular_sidecar',
     'users.apps.UsersConfig',
     'organizations.apps.OrganizationsConfig',
-    'pollr.apps.PollrConfig',
+    'elections.apps.ElectionsConfig',
+    'voting.apps.VotingConfig',
 ]
 
 MIDDLEWARE = [
