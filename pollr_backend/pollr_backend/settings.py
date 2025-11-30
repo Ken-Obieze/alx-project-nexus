@@ -31,7 +31,7 @@ if os.path.exists(env_file):
 SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool("DEBUG", default=False)
+DEBUG = env.bool("DEBUG", default=True)
 
 ALLOWED_HOSTS = []
 
@@ -50,10 +50,14 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_spectacular',
     'drf_spectacular_sidecar',
+    'graphene_django',
+    'django_celery_beat',
+    'django_celery_results',
     'users.apps.UsersConfig',
     'organizations.apps.OrganizationsConfig',
     'elections.apps.ElectionsConfig',
     'voting.apps.VotingConfig',
+    'pollr_backend.background_tasks.apps.BackgroundTasksConfig',
 ]
 
 MIDDLEWARE = [
@@ -178,3 +182,62 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Media files settings
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Celery Configuration (Redis Cloud)
+CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default='redis://localhost:6379/0')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+# Redis Cloud SSL Configuration
+REDIS_CLOUD_HOST = env('REDIS_CLOUD_HOST', default='localhost')
+REDIS_CLOUD_PORT = env.int('REDIS_CLOUD_PORT', default=6379)
+REDIS_CLOUD_PASSWORD = env('REDIS_CLOUD_PASSWORD', default='')
+REDIS_CLOUD_SSL = env.bool('REDIS_CLOUD_SSL', default=False)
+
+# Alternative approach: Use rediss:// for SSL connections
+if REDIS_CLOUD_SSL and REDIS_CLOUD_HOST != 'localhost':
+    # Construct rediss:// URL for SSL connections
+    CELERY_BROKER_URL = f"rediss://:{REDIS_CLOUD_PASSWORD}@{REDIS_CLOUD_HOST}:{REDIS_CLOUD_PORT}/0"
+    CELERY_RESULT_BACKEND = f"rediss://:{REDIS_CLOUD_PASSWORD}@{REDIS_CLOUD_HOST}:{REDIS_CLOUD_PORT}/0"
+    
+    # Additional SSL options
+    CELERY_BROKER_TRANSPORT_OPTIONS = {
+        'ssl': {
+            'ssl_cert_reqs': None,
+            'ssl_ca_certs': None,
+            'ssl_certfile': None,
+            'ssl_keyfile': None,
+        }
+    }
+    CELERY_RESULT_BACKEND_TRANSPORT_OPTIONS = {
+        'master_name': 'mymaster',
+        'visibility_timeout': 3600,
+        'transport_options': {
+            'visibility_timeout': 3600,
+            'ssl': {
+                'ssl_cert_reqs': None,
+                'ssl_ca_certs': None,
+                'ssl_certfile': None,
+                'ssl_keyfile': None,
+            }
+        }
+    }
+
+# GraphQL Configuration
+GRAPHENE = {
+    'SCHEMA': 'graphql.schema.schema',
+    'MIDDLEWARE': [],
+}
+
+# Email Configuration (for background tasks)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = env.int('EMAIL_PORT', default=587)
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@pollr.com')

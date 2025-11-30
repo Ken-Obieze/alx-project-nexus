@@ -27,6 +27,8 @@ from drf_spectacular.views import (
     SpectacularRedocView
 )
 from graphene_django.views import GraphQLView
+from pollr_backend.graphql.schema import schema
+from pollr_backend.views import api_status, health_check
 from users import urls as users_urls
 from organizations import urls as organizations_urls
 from elections import urls as elections_urls
@@ -43,6 +45,10 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    # Root endpoint
+    path('', api_status, name='api_status'),
+    path('health/', health_check, name='health_check'),
+    
     # Admin
     path('admin/', admin.site.urls),
 
@@ -57,8 +63,8 @@ urlpatterns = [
     path('api/v1/elections/', include('elections.urls')),
     path('api/v1/voting/', include('voting.urls')),
 
-    # GraphQL endpoint will be added later when needed
-    # path("graphql/", GraphQLView.as_view(graphiql=True, schema=schema)),
+    # GraphQL endpoint
+    path("graphql/", GraphQLView.as_view(graphiql=True, schema=schema)),
 
 ]
 
