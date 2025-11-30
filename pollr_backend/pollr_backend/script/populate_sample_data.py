@@ -2,7 +2,6 @@
 Sample Data Population Script for PollR Presentation
 Run: python manage.py shell < pollr_backend/script/populate_sample_data.py
 """
-
 from django.contrib.auth import get_user_model
 from organizations.models import Organization, OrganizationMember, MembershipStatus, MemberRole
 from elections.models import Election, Position, Candidate, ElectionStatus
