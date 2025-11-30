@@ -11,19 +11,27 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import environ
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables
+env = environ.Env()
+env_file = os.path.join(BASE_DIR, '.env')
+if os.path.exists(env_file):
+    environ.Env.read_env(env_file)
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-e)_-b38d!d%9=xbxzp#$zsyiesq#zrfep9j*)jse-!1ru0cvhc'
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", default=True)
 
 ALLOWED_HOSTS = []
 
@@ -37,9 +45,23 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'corsheaders',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
+    'graphene_django',
+    'django_celery_beat',
+    'django_celery_results',
+    'users.apps.UsersConfig',
+    'organizations.apps.OrganizationsConfig',
+    'elections.apps.ElectionsConfig',
+    'voting.apps.VotingConfig',
+    'pollr_backend.background_tasks.apps.BackgroundTasksConfig',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -74,11 +96,25 @@ WSGI_APPLICATION = 'pollr_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env("DATABASE_NAME"),
+        'USER': env("DATABASE_USER"),
+        'PASSWORD': env("DATABASE_PASSWORD"),
+        'HOST': env("DATABASE_HOST"),
+        'PORT': env("DATABASE_PORT"),
     }
 }
 
+# DRF Spectacular Settings
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'PollR API',
+    'DESCRIPTION': 'API documentation for PollR polling system',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'SWAGGER_UI_DIST': 'SIDECAR',
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'REDOC_DIST': 'SIDECAR',
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -104,7 +140,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Lagos'
 
 USE_I18N = True
 
@@ -120,3 +156,88 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+    ],
+    "DEFAULT_PARSER_CLASSES": [
+        "rest_framework.parsers.JSONParser",
+    ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+AUTH_USER_MODEL = 'users.User'
+
+# CORS settings
+CORS_ALLOW_ALL_ORIGINS = True 
+CORS_ALLOW_CREDENTIALS = True
+
+# Static files settings
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Media files settings
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Celery Configuration (Redis Cloud)
+CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default='redis://localhost:6379/0')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+# Redis Cloud SSL Configuration
+REDIS_CLOUD_HOST = env('REDIS_CLOUD_HOST', default='localhost')
+REDIS_CLOUD_PORT = env.int('REDIS_CLOUD_PORT', default=6379)
+REDIS_CLOUD_PASSWORD = env('REDIS_CLOUD_PASSWORD', default='')
+REDIS_CLOUD_SSL = env.bool('REDIS_CLOUD_SSL', default=False)
+
+# Alternative approach: Use rediss:// for SSL connections
+if REDIS_CLOUD_SSL and REDIS_CLOUD_HOST != 'localhost':
+    # Construct rediss:// URL for SSL connections
+    CELERY_BROKER_URL = f"rediss://:{REDIS_CLOUD_PASSWORD}@{REDIS_CLOUD_HOST}:{REDIS_CLOUD_PORT}/0"
+    CELERY_RESULT_BACKEND = f"rediss://:{REDIS_CLOUD_PASSWORD}@{REDIS_CLOUD_HOST}:{REDIS_CLOUD_PORT}/0"
+    
+    # Additional SSL options
+    CELERY_BROKER_TRANSPORT_OPTIONS = {
+        'ssl': {
+            'ssl_cert_reqs': None,
+            'ssl_ca_certs': None,
+            'ssl_certfile': None,
+            'ssl_keyfile': None,
+        }
+    }
+    CELERY_RESULT_BACKEND_TRANSPORT_OPTIONS = {
+        'master_name': 'mymaster',
+        'visibility_timeout': 3600,
+        'transport_options': {
+            'visibility_timeout': 3600,
+            'ssl': {
+                'ssl_cert_reqs': None,
+                'ssl_ca_certs': None,
+                'ssl_certfile': None,
+                'ssl_keyfile': None,
+            }
+        }
+    }
+
+# GraphQL Configuration
+GRAPHENE = {
+    'SCHEMA': 'graphql.schema.schema',
+    'MIDDLEWARE': [],
+}
+
+# Email Configuration (for background tasks)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = env.int('EMAIL_PORT', default=587)
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@pollr.com')
